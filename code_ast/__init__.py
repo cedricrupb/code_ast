@@ -15,6 +15,9 @@ from .visitor import (
     VisitorComposition
 )
 
+from .transformer import ASTTransformer, NodeUpdate
+
+
 # Main function --------------------------------
 
 def ast(source_code, lang = "guess", **kwargs):

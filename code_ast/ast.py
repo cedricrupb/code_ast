@@ -16,9 +16,19 @@ class SourceCodeAST:
     # Visit tree ----------------------------------------------------------------
 
     def visit(self, visitor):
+
+        try:
+            visitor.from_code_lines(self.source_lines)
+        except AttributeError:
+            # Is not a transformer
+            pass
+
         visitor(self.source_tree)
 
     # Repr ----------------------------------------------------------------
+
+    def code(self):
+        return "\n".join(self.source_lines)
 
     def __repr__(self):
 
@@ -32,7 +42,7 @@ class SourceCodeAST:
 
 # AST to readable ----------------------------------------------------------------
 
-LEAVE_WHITELIST = {"identifier"}
+LEAVE_WHITELIST = {"identifier", "integer", "float"}
 
 def _serialize_node(node):
     return f"{node.type} [{node.start_point[0]}, {node.start_point[1]}] - [{node.end_point[0]}, {node.end_point[1]}]"
