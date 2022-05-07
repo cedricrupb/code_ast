@@ -176,7 +176,7 @@ def _path_to_local():
     if PATH_TO_LOCALCACHE is None:
         current_path = os.path.abspath(__file__)
         
-        while os.path.basename(current_path) != "code_tokenize":
+        while os.path.basename(current_path) != "code_ast":
             current_path = os.path.dirname(current_path)
         
         current_path = os.path.dirname(current_path) # Top dir
