@@ -139,7 +139,7 @@ mirror_transformer.edit()
 mirror_transformer.code()
 # Output:
 # def f(x, y):
-#    return 0.5 + x + y
+#    return 0.5 + y + x
 
 ```
 
