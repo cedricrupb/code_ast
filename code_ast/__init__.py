@@ -15,7 +15,12 @@ from .visitor import (
     VisitorComposition
 )
 
-from .transformer import ASTTransformer, NodeUpdate
+from .transformer import (
+    ASTTransformer,
+    FormattedUpdate,
+    TextUpdate,
+    NodeUpdate
+)
 
 
 # Main function --------------------------------
