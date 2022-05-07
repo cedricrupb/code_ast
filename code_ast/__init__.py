@@ -3,6 +3,8 @@ import logging as logger
 
 from .config import ParserConfig
 
+from .ast import SourceCodeAST
+
 from .parsers import (
     ASTParser,
     match_span
@@ -63,7 +65,7 @@ def ast(source_code, lang = "guess", **kwargs):
     # Check for errors if necessary
     check_tree_for_errors(tree, mode = config.syntax_error)
 
-    return tree, code
+    return SourceCodeAST(config, tree, code)
 
 
 # Lang detect --------------------------------------  
