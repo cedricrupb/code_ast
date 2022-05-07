@@ -1,4 +1,11 @@
+"""
+Lean wrapper around the tree-sitter Python API
 
+Main features:
+- Parses arbitrary code as string and bytes
+- Autoloading / Compiling of AST parsers
+
+"""
 import os
 from tree_sitter import Language, Parser
 
@@ -123,59 +130,6 @@ class ASTParser:
 
 
 # Utils ------------------------------------------------
-
-def _traverse_tree(root_node, stop_fn = None, handle_error = None):
-
-    if stop_fn is None: stop_fn = lambda x: False
-    if handle_error is None: handle_error = lambda x: None
-
-    stack = [root_node]
-    while len(stack) > 0:
-        node = stack.pop(-1)
-
-        if node.type == "ERROR":
-            if handle_error(node) == "STOP": continue
-
-        if node.type == "string":
-            yield node
-            continue
-
-        for child in node.children:
-            if stop_fn(child): continue
-            stack.append(child)
-
-        if not node.children:
-            yield node 
-
-
-def traverse_tree(root_node, stop_fn = None, handle_error = None):
-    """
-    Inorder traverses tree only returning leaf nodes
-
-    Parameters
-    ----------
-    root_node : tree-sitter node object
-        Root of the AST to traverse
-    
-    stop_fn : fn node -> bool
-        Function to stop traversing subtrees
-        If function returns tree, stops traversing the tree
-        rooted at the given node
-        Default: None (consider all nodes)
-
-    handle_error : fn node -> str
-        Function to handle nodes indicating errors
-        If function returns STOP, it ignores the subtree
-        rooted at the given node (same as stop_fn).
-        Default: None (ignore all syntactic errors)
-
-    Returns
-    -------
-    Inorder list of leaf nodes
-    
-    """
-    return list(_traverse_tree(root_node, stop_fn, handle_error))[::-1]
-
 
 def match_span(source_tree, source_lines):
     """

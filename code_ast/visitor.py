@@ -1,4 +1,8 @@
+"""
+AST Visitors
 
+Can be directly executed on AST structures
+"""
 
 class ASTVisitor:
 
