@@ -6,12 +6,19 @@ To achieve high performance PLP systems, existing methods often take advantage o
 
 **code.ast** provides easy access to the syntactic structure of a program. By relying on [tree-sitter](https://github.com/tree-sitter) as the back end, the parser supports fast parsing of variety of programming languages. 
 
-The goal of code.ast is to combine the efficiency and variety of languages supported by tree-sitter with the convenience of more native parsers (like [libcst]()). 
+The goal of code.ast is to combine the efficiency and variety of languages supported by tree-sitter with the convenience of more native parsers (like [libcst](https://github.com/Instagram/LibCST)). 
 
 To achieve this, code.ast adds the features:
 1. **Auto-loading:** Compile of source code parsers for any language supported by tree-sitter with a single keyword,
 2. **Visitors:** Search the AST quickly,
 3. **Transformers:** Transform source code easily by transforming the AST structure
+
+## Installation
+This package is currently not available via a package manager. To install this package,
+run:
+```bash
+pip install -e .
+```
 
 ## Quick start
 code.ast can parse nearly any program code in a few lines of code:
