@@ -14,10 +14,9 @@ To achieve this, code.ast adds the features:
 3. **Transformers:** Transform source code easily by transforming the AST structure
 
 ## Installation
-This package is currently not available via a package manager. To install this package,
-run:
+The package is tested under Python 3. It can be installed via:
 ```bash
-pip install -e .
+pip install code-ast
 ```
 
 ## Quick start
