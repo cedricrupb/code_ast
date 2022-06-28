@@ -14,7 +14,7 @@ setup(
   author = 'Cedric Richter',                   
   author_email = 'cedricr.upb@gmail.com',    
   url = 'https://github.com/cedricrupb/code_ast',  
-  download_url = '', 
+  download_url = 'https://github.com/cedricrupb/code_ast/archive/refs/tags/v0.1.0.tar.gz',  
   keywords = ['code', 'ast', 'syntax', 'program', 'language processing'], 
   install_requires=[          
           'tree_sitter',
