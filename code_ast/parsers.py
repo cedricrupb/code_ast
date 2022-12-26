@@ -50,7 +50,7 @@ def load_language(lang):
     source_lang_path   = os.path.join(cache_path, "tree-sitter-%s" % lang)
 
     if os.path.isfile(compiled_lang_path):
-        return Language(compiled_lang_path, lang)
+        return Language(compiled_lang_path, _lang_to_fnname(lang))
     
     if os.path.exists(source_lang_path) and os.path.isdir(source_lang_path):
         logger.warn("Compiling language for %s" % lang)
@@ -194,6 +194,14 @@ def _compile_lang(source_path, compiled_path):
             source_path
         ]
     )
+
+
+def _lang_to_fnname(lang):
+    """
+    dash is not supported for function names. Therefore,
+    we assume that dashes represented by underscores.
+    """
+    return lang.replace("-", "_")
 
 
 # Auto Clone from Github --------------------------------

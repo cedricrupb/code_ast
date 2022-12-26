@@ -33,7 +33,7 @@ class SourceCodeAST:
     def __repr__(self):
 
         lang = self.config.lang
-        lang_name = lang[0].upper() + lang[1:]
+        lang_name = "".join((lang_part[0].upper() + lang_part[1:] for lang_part in lang.split("-")))
 
         ast_repr = ast_to_str(self.source_tree, indent = 1)
 
