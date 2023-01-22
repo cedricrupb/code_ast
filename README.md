@@ -10,8 +10,12 @@ The goal of code.ast is to combine the efficiency and variety of languages suppo
 
 To achieve this, code.ast adds the features:
 1. **Auto-loading:** Compile of source code parsers for any language supported by tree-sitter with a single keyword,
-2. **Visitors:** Search the AST quickly,
-3. **Transformers:** Transform source code easily by transforming the AST structure
+2. **Visitors:** Search the concrete syntax tree produced by tree-sitter quickly,
+3. **Transformers:** Transform source code easily by transforming the syntax structure
+
+*Note* that tree-sitter produces a concrete syntax tree and we currently parse
+the CST as is. Future versions of code.ast might include options to simplify the CST
+to an AST.
 
 ## Installation
 The package is tested under Python 3. It can be installed via:
@@ -70,7 +74,7 @@ lang = "java")
 ```
 
 ## Visitors
-code.ast implements the visitor pattern to quickly traverse the AST structure:
+code.ast implements the visitor pattern to quickly traverse the CST structure:
 ```python
 import code_ast
 from code_ast import ASTVisitor
@@ -152,7 +156,7 @@ mirror_transformer.code()
 ## Project Info
 The goal of this project is to provide developer in the
 programming language processing community with easy
-access to AST parsing. This is currently developed as a helper library for internal research projects. Therefore, it will only be updated
+access to syntax parsing. This is currently developed as a helper library for internal research projects. Therefore, it will only be updated
 as needed.
 
 Feel free to open an issue if anything unexpected
