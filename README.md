@@ -122,8 +122,14 @@ source_ast = code_ast.ast(code, lang = "python")
 identifiers = source_ast.visit(
     lambda node: node.type == "identifier")
 
+# Shortcut:
+# identifiers = source_ast.visit("identifier")
+
 len(identifiers)
 # Output: 5
+
+[source_ast.match(identifier) for identifier in identifiers]
+# Output: ['f', 'x', 'y', 'x', 'y']
 
 ```
 ast.visit accepts now any function which accepts a node as input.
@@ -131,7 +137,7 @@ The function can return a boolean or another object. The boolean
 decides whether a node is included in the output. Otherwise,
 we collect the result of the function (if not None).
 
-For more complex use cases, please consider to implement a new visitor.
+For more complex use cases, please consider implementing a new visitor.
 
 ## Transformers
 Transformers provide an easy way to transform source code. For example, in the following, we want to mirror each binary addition:
