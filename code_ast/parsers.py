@@ -15,6 +15,10 @@ import logging as logger
 import requests
 from git import Repo
 
+# Handling of newer versions of tree_sitter
+from importlib import import_module
+from importlib.metadata import version
+
 
 # Automatic loading of Tree-Sitter parsers --------------------------------
 
@@ -22,6 +26,13 @@ def load_language(lang):
     """
     Loads a language specification object necessary for tree-sitter.
 
+    Language specifications are now based on Python modules which
+    can be loaded during runtime. This function tries to import
+    the language specification from a Python module. 
+    If it fails (e.g. because the language is not supprorted),
+    why try to load the language with the old method.
+
+    Old method (pre v0.22.0):
     Language specifications are loaded from remote or a local cache.
     If language specification is not contained in cache, the function
     clones the respective git project and then builds the language specification
@@ -41,7 +52,28 @@ def load_language(lang):
     -------
     Language
         language specification object
+    """
 
+    lang_binding = "tree-sitter-%s" % lang
+    try:
+        lang_module = import_module(lang_binding)
+        return Language(lang_module.language(), lang)
+    except ImportError:
+        tree_sitter_version = version("tree_sitter")
+        
+        if tree_sitter_version >= "0.22.0":
+            logger.warning(
+                "Loading languages from a remote repository is deprecated for tree-sitter >= 0.22.0\n"
+                f"Please install {lang_binding} via pip or downgrade the tree-sitter version."
+            )             
+
+        return __pre22_load_language(lang)
+
+
+def __pre22_load_language(lang):
+    """
+    We keep this for downward compatibility. After v0.22.0, this
+    way of loading languages is not longer supported.
     """
 
     cache_path = _path_to_local()
@@ -55,11 +87,11 @@ def load_language(lang):
     if os.path.exists(source_lang_path) and os.path.isdir(source_lang_path):
         logger.warn("Compiling language for %s" % lang)
         _compile_lang(source_lang_path, compiled_lang_path)
-        return load_language(lang)
+        return __pre22_load_language(lang)
 
     logger.warn("Autoloading AST parser for %s: Start download from Github." % lang)
     _clone_parse_def_from_github(lang, source_lang_path)
-    return load_language(lang)
+    return __pre22_load_language(lang)
 
 # Parser ---------------------------------------------------------------
 
