@@ -1,5 +1,10 @@
 from .parsers import match_span
 
+from .visitor import (
+    ASTVisitor, 
+    visit_tree
+)
+
 class SourceCodeAST:
 
     def __init__(self, config, source_tree, source_lines):
@@ -23,7 +28,7 @@ class SourceCodeAST:
             # Is not a transformer
             pass
 
-        visitor(self.source_tree)
+        return visit_tree(self.source_tree, visitor)
 
     # Repr ----------------------------------------------------------------
 
