@@ -1,9 +1,5 @@
 from .parsers import match_span
-
-from .visitor import (
-    ASTVisitor, 
-    visit_tree
-)
+from .visitor import visit_tree
 
 class SourceCodeAST:
 
@@ -29,6 +25,14 @@ class SourceCodeAST:
             pass
 
         return visit_tree(self.source_tree, visitor)
+
+    # Simple edits --------------------------------------------------------
+
+    def replace(self, node, target):
+        return _replace(self, node, target)
+
+    def replace_all(self, nodes, targets):
+        return _replace_all(self, nodes, targets)
 
     # Repr ----------------------------------------------------------------
 
@@ -82,3 +86,44 @@ def ast_to_str(tree, indent = 0):
             has_next = cursor.goto_next_sibling()
 
     return "\n".join(ast_lines)
+
+# Replace operations ----------------------------------------------------------------
+
+def _is_overlapping(spans):
+    sorted_spans = sorted(spans)
+
+    for i in range(len(sorted_spans) - 1):
+        if sorted_spans[i][1] >= sorted_spans[i + 1][0]:
+            return True
+
+    return False
+
+
+def _replace(ast, node, target):
+    source_lines = list(ast.source_lines)
+
+    start_line, end_line = node.start_point[0], node.end_point[0]
+    prefix  = source_lines[start_line][:node.start_point[1]]
+    postfix = source_lines[end_line][node.end_point[1]:] 
+
+    source_lines[start_line:end_line+1] = [prefix + target + postfix]
+    return "\n".join(source_lines)
+
+
+def _replace_all(ast, nodes, targets):
+    assert len(nodes) == len(targets), "Number of nodes and targets do not match"
+    source_lines = list(ast.source_lines)
+
+    spans = []
+    for node, target in zip(nodes, targets):
+        spans.append((node.start_point, node.end_point, target))
+
+    assert not _is_overlapping(spans), "Cannot edit overlapping spans at the same time. Please use ast.replace instead."
+    
+    for start, end, target in sorted(spans, reverse=True):
+        start_line, end_line = start[0], end[0]
+        prefix  = source_lines[start_line][:start[1]]
+        postfix = source_lines[end_line][end[1]:] 
+        source_lines[start_line:end_line+1] = [prefix + target + postfix]
+    
+    return "\n".join(source_lines)
