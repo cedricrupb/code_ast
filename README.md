@@ -104,6 +104,35 @@ count_visitor.count
 
 ```
 
+**New visitor API**: Version 0.1.1 implements a new visitor API
+that allows to traverse the CST without requiring an extra class.
+```python
+import code_ast
+from code_ast import ASTVisitor
+
+code = '''
+    def f(x, y):
+        return x + y
+'''
+
+# Parse the AST and then visit it with our visitor
+source_ast = code_ast.ast(code, lang = "python")
+
+# Visits all nodes and collects nodes that are identifiers
+identifiers = source_ast.visit(
+    lambda node: node.type == "identifier")
+
+len(identifiers)
+# Output: 5
+
+```
+ast.visit accepts now any function which accepts a node as input.
+The function can return a boolean or another object. The boolean
+decides whether a node is included in the output. Otherwise,
+we collect the result of the function (if not None).
+
+For more complex use cases, please consider to implement a new visitor.
+
 ## Transformers
 Transformers provide an easy way to transform source code. For example, in the following, we want to mirror each binary addition:
 ```python
