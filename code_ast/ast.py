@@ -12,7 +12,10 @@ class SourceCodeAST:
         return self.source_tree.root_node
 
     def match(self, source_node):
-        return match_span(source_node, self.source_lines)
+        try:
+            return source_node.text.decode("utf-8")    
+        except (AttributeError, UnicodeDecodeError):
+            return match_span(source_node, self.source_lines)
 
     # Visit tree ----------------------------------------------------------------
 
@@ -118,7 +121,7 @@ def _replace_all(ast, nodes, targets):
     for node, target in zip(nodes, targets):
         spans.append((node.start_point, node.end_point, target))
 
-    assert not _is_overlapping(spans), "Cannot edit overlapping spans at the same time. Please use ast.replace instead."
+    assert not _is_overlapping(spans), "Cannot edit overlapping spans at the same time."
     
     for start, end, target in sorted(spans, reverse=True):
         start_line, end_line = start[0], end[0]
