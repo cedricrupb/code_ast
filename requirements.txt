@@ -1,3 +1,4 @@
 tree_sitter==0.19.0
 requests==2.25.1
 GitPython==3.1.18
+tree-sitter-languages==1.10.2
