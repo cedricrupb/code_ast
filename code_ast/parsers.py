@@ -15,51 +15,12 @@ import logging as logger
 import requests
 from git import Repo
 
-
 # Automatic loading of Tree-Sitter parsers --------------------------------
+from tree_sitter_languages import get_language
 
-def load_language(lang):
-    """
-    Loads a language specification object necessary for tree-sitter.
-
-    Language specifications are loaded from remote or a local cache.
-    If language specification is not contained in cache, the function
-    clones the respective git project and then builds the language specification
-    via tree-sitter.
-    We employ the same language identifier as tree-sitter and
-    lang is translated to a remote repository 
-    (https://github.com/tree-sitter/tree-sitter-[lang]).
-
-    Parameters
-    ----------
-    lang : [python, java, javascript, ...]
-        language identifier specific to tree-sitter.
-        As soon as there is a repository with the same language identifier
-        the language is supported by this function.
-
-    Returns
-    -------
-    Language
-        language specification object
-
-    """
-
-    cache_path = _path_to_local()
-    
-    compiled_lang_path = os.path.join(cache_path, "%s-lang.so" % lang)
-    source_lang_path   = os.path.join(cache_path, "tree-sitter-%s" % lang)
-
-    if os.path.isfile(compiled_lang_path):
-        return Language(compiled_lang_path, _lang_to_fnname(lang))
-    
-    if os.path.exists(source_lang_path) and os.path.isdir(source_lang_path):
-        logger.warn("Compiling language for %s" % lang)
-        _compile_lang(source_lang_path, compiled_lang_path)
-        return load_language(lang)
-
-    logger.warn("Autoloading AST parser for %s: Start download from Github." % lang)
-    _clone_parse_def_from_github(lang, source_lang_path)
-    return load_language(lang)
+def load_language(lang: str)->Language:
+    """Using pre-built binaries from `tree-sitter-languages`"""
+    return get_language(lang)
 
 # Parser ---------------------------------------------------------------
 
