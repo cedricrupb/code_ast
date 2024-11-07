@@ -19,7 +19,8 @@ from .transformer import (
     ASTTransformer,
     FormattedUpdate,
     TextUpdate,
-    NodeUpdate
+    NodeUpdate,
+    UpdateTree
 )
 
 
