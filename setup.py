@@ -6,7 +6,7 @@ with open("README.md", "r") as f:
 setup(
   name = 'code_ast',
   packages = ['code_ast'], 
-  version = '0.1.0', 
+  version = '0.1.1', 
   license='MIT',     
   description = 'Fast structural analysis of any programming language in Python',
   long_description = long_description,
