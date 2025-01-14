@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools"] 
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "code_ast"
+version = "v0.1.1"
+description = "Fast structural analysis of any programming language in Python"
+readme = "README.md"
+requires-python = ">= 3.8"
+license = { file = "LICENSE.txt" }
+keywords = ["code", "ast", "cst", "syntax", "program", "language processing"]
+
+authors = [{name = "Cedric Richter", email = "cedricr.upb@gmail.com"}]
+maintainers = [{name = "Cedric Richter", email = "cedricr.upb@gmail.com"}]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",    
+    "Intended Audience :: Developers",  
+    "Topic :: Software Development :: Build Tools",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3", 
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+  ]
+
+dependencies = ["tree_sitter", "GitPython", "requests"]
+
+[project.urls]
+"Homepage" = "https://github.com/cedricrupb/code_ast"
+"Bug Reports" = "https://github.com/cedricrupb/code_ast/issues"
+"Source" = "https://github.com/cedricrupb/code_ast"
