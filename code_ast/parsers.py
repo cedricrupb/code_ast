@@ -15,6 +15,11 @@ import logging as logger
 import requests
 from git import Repo
 
+try:
+    from tree_sitter_languages import get_language, get_parser
+except ImportError:
+    get_language, get_parser = None, None
+
 
 # Automatic loading of Tree-Sitter parsers --------------------------------
 
@@ -44,6 +49,12 @@ def load_language(lang):
 
     """
 
+    if get_language is not None:
+        try:
+            return get_language(lang)
+        except Exception as e:
+            logger.exception("No pre-compiled language for %s exists. Start compiling." % lang)
+
     cache_path = _path_to_local()
     
     compiled_lang_path = os.path.join(cache_path, "%s-lang.so" % lang)
@@ -53,11 +64,11 @@ def load_language(lang):
         return Language(compiled_lang_path, _lang_to_fnname(lang))
     
     if os.path.exists(source_lang_path) and os.path.isdir(source_lang_path):
-        logger.warn("Compiling language for %s" % lang)
+        logger.warning("Compiling language for %s" % lang)
         _compile_lang(source_lang_path, compiled_lang_path)
         return load_language(lang)
 
-    logger.warn("Autoloading AST parser for %s: Start download from Github." % lang)
+    logger.warning("Autoloading AST parser for %s: Start download from Github." % lang)
     _clone_parse_def_from_github(lang, source_lang_path)
     return load_language(lang)
 
@@ -86,8 +97,12 @@ class ASTParser:
 
         self.lang_id = lang
         self.lang    = load_language(lang)
-        self.parser  = Parser()
-        self.parser.set_language(self.lang)
+
+        if get_parser is not None:
+            self.parser = get_parser(self.lang_id)
+        else:
+            self.parser  = Parser()
+            self.parser.set_language(self.lang)
 
     def parse_bytes(self, data):
         """
@@ -219,7 +234,7 @@ def _clone_parse_def_from_github(lang, cache_path):
     if not _exists_url(REPO_URL):
         raise ValueError("There is no parsing def for language %s available." % lang)
 
-    logger.warn("Start cloning the parser definition from Github.")
+    logger.warning("Start cloning the parser definition from Github.")
     try:  
         Repo.clone_from(REPO_URL, cache_path)
     except Exception:
