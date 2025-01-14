@@ -18,9 +18,12 @@ setup(
   keywords = ['code', 'ast', 'syntax', 'program', 'language processing'], 
   install_requires=[          
         'tree_sitter==0.21.3',
-        'GitPython==3.1.18',
-        'requests==2.25.1',
+        'GitPython>=3.1.41',
+        'requests>=2.32.0',
       ],
+  extra_requires=[
+      'GitPython>=3.1.41',
+  ],
   classifiers=[
     'Development Status :: 3 - Alpha',    
     'Intended Audience :: Developers',  
