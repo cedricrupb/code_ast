@@ -121,7 +121,7 @@ class ASTParser:
         self.parser  = Parser()
         self.parser.set_language(self.lang)
 
-    def parse_bytes(self, data):
+    def parse_bytes(self, data, old_tree = None):
         """
         Parses source code as bytes into AST
 
@@ -129,15 +129,19 @@ class ASTParser:
         ----------
         data : bytes
             Source code as a stream of bytes
+        
+        old_tree :
+            Old syntax tree of the code before editing.
+            This is used to speed up parsing. 
 
         Returns
         -------
         tree-sitter syntax tree
 
         """
-        return self.parser.parse(data)
+        return self.parser.parse(data, old_tree=old_tree)
 
-    def parse(self, source_code):
+    def parse(self, source_code, old_tree = None):
         """
         Parses source code into AST
 
@@ -145,6 +149,10 @@ class ASTParser:
         ----------
         source_code : str
             Source code as a string
+        
+        old_tree :
+            Old syntax tree of the code before editing.
+            This is used to speed up parsing. 
 
         Returns
         -------
@@ -158,7 +166,7 @@ class ASTParser:
         source_lines = source_code.splitlines()
         source_bytes = source_code.encode("utf-8")
 
-        return self.parse_bytes(source_bytes), source_lines
+        return self.parse_bytes(source_bytes, old_tree), source_lines
 
 
 # Utils ------------------------------------------------
