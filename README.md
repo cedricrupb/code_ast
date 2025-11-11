@@ -23,12 +23,16 @@ The package is tested under Python 3. It can be installed via:
 pip install code-ast
 ```
 
-Note: Install `tree_sitter_language` to utilize pre-compiled languages via:
+Note: You need to install the different tree-sitter languages as Python packages.
+For example, for Python, you need to install `tree-sitter-python` via PIP:
+```bash
+pip install tree-sitter-python
+```
+
+Note (since tree-sitter v0.22.0): Autoloading of languages or installation with `tree_sitter_language` to utilize pre-compiled languages is deprecated. If you fix the tree-sitter version to `0.21.3` than you can make use of pre-compiled languages via:
 ```bash
 pip install tree_sitter_languages
 ```
-If `tree_sitter_language` is not installed, `code_ast` will try
-to download and compile the selected language from scratch.
 
 ## Quick start
 code.ast can parse nearly any program code in a few lines of code:
