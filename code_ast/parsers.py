@@ -9,11 +9,15 @@ Main features:
 import os
 from tree_sitter import Language, Parser
 
+import importlib
+from importlib.metadata import version
+
 import logging as logger
 
 # For autoloading
 import requests
 from git import Repo
+
 
 try:
     from tree_sitter_languages import get_language, get_parser
@@ -35,6 +39,11 @@ def load_language(lang):
     lang is translated to a remote repository 
     (https://github.com/tree-sitter/tree-sitter-[lang]).
 
+    Note: Since tree_sitter v0.22.0, language specifications are loaded as 
+    Python packages. Therefore, autoloading won't work. For these, you
+    have to install the right python package via PIP 
+    (see: https://github.com/tree-sitter/py-tree-sitter).
+
     Parameters
     ----------
     lang : [python, java, javascript, ...]
@@ -48,6 +57,20 @@ def load_language(lang):
         language specification object
 
     """
+    if version("tree_sitter") < "0.22.0":
+        return _pre22_load_language(lang)
+    return _load_language(lang)
+
+
+def _load_language(lang):
+    try:
+        tree_sitter_pkg = importlib.import_module(f"tree_sitter_{lang}")
+        return Language(tree_sitter_pkg.language())
+    except ImportError:
+        raise ImportError(f"'tree_sitter_{lang}' not found. Please install the package via `pip install tree-sitter-{lang}`.")
+
+
+def _pre22_load_language(lang):
 
     if get_language is not None:
         try:
@@ -71,6 +94,22 @@ def load_language(lang):
     logger.warning("Autoloading AST parser for %s: Start download from Github." % lang)
     _clone_parse_def_from_github(lang, source_lang_path)
     return load_language(lang)
+
+
+def _construct_parser(lang_id, language):
+    if version("tree_sitter") < "0.22.0":
+        return _pre22_construct_parser(lang_id, language)
+    return Parser(language)
+
+def _pre22_construct_parser(lang_id, language):
+    if get_parser is not None:
+        return get_parser(lang_id)
+    else:
+        parser  = Parser()
+        parser.set_language(language)
+        return parser
+
+
 
 # Parser ---------------------------------------------------------------
 
@@ -97,13 +136,9 @@ class ASTParser:
 
         self.lang_id = lang
         self.lang    = load_language(lang)
+        self.parser  = _construct_parser(self.lang_id, self.lang)
 
-        if get_parser is not None:
-            self.parser = get_parser(self.lang_id)
-        else:
-            self.parser  = Parser()
-            self.parser.set_language(self.lang)
-
+        
     def parse_bytes(self, data):
         """
         Parses source code as bytes into AST

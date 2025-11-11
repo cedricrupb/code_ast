@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "code_ast"
-version = "v0.1.1"
+version = "v0.1.2"
 description = "Fast structural analysis of any programming language in Python"
 readme = "README.md"
 requires-python = ">= 3.8"
